@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>sorting.js</title>
+    <script src="js/lib/jquery-1.11.3.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/sorting.js"></script>
+    <link href='css/lib/bootstrap.min.css' rel='stylesheet'>
+    <style>
+        .compare {
+            font-weight: bold;
+            color: #00F;
+        }
+        .swap {
+            font-weight: bold;
+            color: #F00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="from-group">
+                    <label for="#array-size">Array Size</label>
+                    <input id="array-size" class="form-control" type='number' value="50"/>
+                </div>
+
+            <!-- +++++++++ Selection of Algorithm from thr given list of algorithms +++++++++++++ -->
+
+                <div class="form-group">
+                    <label for="#algo-select">Algorithm</label>
+                    <select class="form-control" id="algo-select">
+                        <option value="bubblesort">Bubble sort</option>
+                        <option value="selectionsort">Selection sort</option>
+                        <option value="insertionsort">Insertion sort</option>
+                        <option value="quicksort">Quicksort</option>
+                        <option value="mergesort">Merge sort</option>
+                        <option value="heapsort">Heap sort</option>
+                    </select>
+                </div>
+            <!-- ++++++++++++++ Selection of Array type +++++++++++++++++++++++++  -->        
+
+                <div class="form-group">
+                    <label for="#initial-select">Initial array</label>
+                    <select class="form-control" id="initial-select">
+                        <option value="rendom">Rendom</option>
+                        <option value="sorted">Sorted</option>
+                        <option value="reversed">Reversed</option>
+                    </select>
+                </div>
+                <!-- +++++++++++++++++++ Selection of Pivot Element +++++++++++++++++++++++++++ -->
+
+                <div class="form-group" id="pivot-select-div">
+                    <label for="#pivot-select">Pivot choice</label>
+                    <select class="form-control" id="pivot-select">
+                        <option value="random">Rendom</option>
+                        <option value="first">First</option>
+                        <option value="middle">Middle</option>
+                        <option value="last">Last</option>
+                        <option value="median3">Median of 3</option>
+                    </select>
+                </div>
+                <!-- ++++++++++++++++++ Input the time in ms for the delay +++++++++++++++++++++ -->
+
+                <div class="form-group">
+                    <label for="#interval">Interval (ms)</label>
+                    <input id="interval" class="form-control" type='number' value="20"/>
+                </div>
+                <p class="text-muted">
+                    Comparisons are <span class="compare">blue</span>,
+                    <br>
+                    swaps are <span class="swap">red</span>.
+                </p>
+                <div class="text-center">
+                    <button class="btn btn-lg btn-primary" id="start-btn">Start</button>
+                </div>
+            </div>
+            <div class="col-xs-9" id="canvas-div">
+                <canvas width="800px" height="600px" id="main-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        /* +++++++++++++++++++ Function for Asynchronous calling ++++++++++++++++++++++++ */
+
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-50623594-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <script>
+        $(function(){
+            var aa = null;
+
+            /* +++++++++++++++++++++++ Make the canvas fit the available space ++++++++++++++++ */ 
+
+            var resize_canvas = function() {
+                $('#main-canvas').width($('canvas-div').width());
+            }
+            resize_canvas();
+            $(window).resize(resize_canvas);
+
+            /* ++++++++++++++++++++  Display / enable the pivot select as needed ++++++++++++++ */
+
+            var update_pivot_select = function() {
+                var algo = $('#algo-select').val();
+                var pivot_algo = sorting.is_pivot_algo(algo);
+                $('#pivot-select').prop('disabled', !pivot_algo);
+                $('#pivot-select-div').toggleClass('hidden', !pivot_algo);
+            }
+            update_pivot_select();
+            $('#algo-select').change(update_pivot_select);
+            $('#start-btn').click(function() {
+                if(aa !== null) aa.cancel();
+
+                var n = parseInt($('#array-size').val());
+                var interval = parseInt($('#interval').val());
+                var algo = $('#algo-select').val();
+                var pivot_type = $('#pivot-select').val();
+                var sort_fn = sorting.get_sort_fn(algo, pivot_type);
+
+                if(algo === "bitonic_mergesort") {
+                    
+                    // Round up to the nearest power of 2
+                    
+                    var n2 = 1;
+                    while(n2 < n) n2 *= 2;
+                    $('#array-size').val(n2);
+                    n = n2;
+                }
+
+                var ary = [];
+                for(var i = 0; i < n; i++) {
+                    ary.push(Math.random() - 0.5);
+                }
+                var init = $('#initial-select').val();
+                if(init === 'sorted') {
+                    ary.sort(function(a, b) {return a - b;});
+                }else if (init === 'reversed') {
+                    ary.sort(function(a, b) { return b - a;});
+                }
+
+                var canvas = document.getElementById('main-canvas');
+                aa = new sorting.AnimatedArray(ary, canvas, interval);
+                sort_fn(aa);
+            });
+        });
+    </script>
+</body>
+</html>
