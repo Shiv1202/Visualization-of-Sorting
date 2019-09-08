@@ -84,7 +84,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <!-- <script>
 
         /* +++++++++++++++++++ Function for Asynchronous calling ++++++++++++++++++++++++ */
 
@@ -94,7 +94,7 @@
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       ga('create', 'UA-50623594-2', 'auto');
       ga('send', 'pageview');
-    </script>
+    </script> -->
     <script>
         $(function(){
             var aa = null;
@@ -102,7 +102,7 @@
             /* +++++++++++++++++++++++ Make the canvas fit the available space ++++++++++++++++ */ 
 
             var resize_canvas = function() {
-                $('#main-canvas').width($('canvas-div').width());
+                $('#main-canvas').width($('#canvas-div').width());
             }
             resize_canvas();
             $(window).resize(resize_canvas);
@@ -117,6 +117,7 @@
             }
             update_pivot_select();
             $('#algo-select').change(update_pivot_select);
+            
             $('#start-btn').click(function() {
                 if(aa !== null) aa.cancel();
 
@@ -129,7 +130,7 @@
                 if(algo === "bitonic_mergesort") {
                     
                     // Round up to the nearest power of 2
-                    
+
                     var n2 = 1;
                     while(n2 < n) n2 *= 2;
                     $('#array-size').val(n2);
