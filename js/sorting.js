@@ -1,8 +1,8 @@
 var sorting = (function() {
 
-    var DEFAULT_COLOR = '#777';
-    var COMPARE_COLOR = '#00f';
-    var SWAP_COLOR = '#f00';
+    var DEFAULT_COLOR = '#00b3b3';
+    var COMPARE_COLOR = '#cc3399';
+    var SWAP_COLOR = ' #7094db';
 
      function randint(low, high) {
          // Return a random integer in the range [low, high] inclusive.
@@ -23,7 +23,7 @@ var sorting = (function() {
            var ctx = canvas.getContext('2d');
 
            // Clear the canvas
-           ctx.fillStyle = '#fff';
+           ctx.fillStyle = '#b3cccc';
            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
            // Find min and max elements
